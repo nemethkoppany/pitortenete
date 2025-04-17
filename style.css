@@ -54,3 +54,7 @@ table, tr, th, td {
     background-color: antiquewhite;
  
 }
+.error{
+    color: red;
+    font-weight: bold;
+}
