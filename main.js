@@ -1,3 +1,8 @@
+/**
+ * 
+ * @param {string} nameOfTheClass 
+ * @returns {HTMLDivElement}
+ */
 const divMaker = (nameOfTheClass) =>{ //div készítős arrow function
     const div = document.createElement('div'); //div létrehozás
     div.className = nameOfTheClass; //className beállítása
