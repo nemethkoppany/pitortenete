@@ -1,3 +1,5 @@
+const tomb = []//Tömb létrehozása
+
 /**
  * 
  * @param {string} nameOfTheClass 
@@ -67,6 +69,31 @@ for(const fieldElement of elementsOfField){//fieldElement tömb bejárása
 const buttonRegular = document.createElement("button"); //Button létrehozása
 buttonRegular.textContent = "Hozzáadás";//A button tartalma
 formRegular.appendChild(buttonRegular); //A button formhoz adása
+
+formRegular.addEventListener("submit", (e)=>{//Eventlistener a submit eseményre
+    e.preventDefault(); //Alapétrelmezett végrehajtás megakadályozása
+
+    const contentObject = {} //Objektum létrehozása
+    const inputs = e.target.querySelectorAll("input") //Megkeressük az összes inputot
+    for(const input of inputs){ //Végigmegyünk az inputokon
+        contentObject[input.id] = input.value; //A contentObject értékének az id-je legyen egynelő az input értékével
+    }
+    tomb.push(contentObject); //És azt töltsük bele a táblázatba
+    const tr = document.createElement("tr") //HTML elem létzrehozása
+    tbody.appendChild(tr);//Hozzáadjuk az egyel fölötti réteghez
+
+    const nametd = document.createElement("td");//HTML elem létzrehozása
+    nametd.textContent = contentObject.name; //Értékadás
+    tr.appendChild(nametd);//Hozzáadjuk az egyel fölötti réteghez
+
+    const szamjegytd = document.createElement("td");//HTML elem létzrehozása
+    szamjegytd.textContent = contentObject.number; //Értékadás
+    tr.appendChild(szamjegytd);//Hozzáadjuk az egyel fölötti réteghez
+
+    const szazadtd = document.createElement("td");//HTML elem létzrehozása
+    szazadtd.textContent = contentObject.century; //Értékadás
+    tr.appendChild(szazadtd);//Hozzáadjuk az egyel fölötti réteghez
+});
 
 divAsAContainer.appendChild(divTable); //A table container-hez adása
 divAsAContainer.appendChild(divForm); //A form container-hez adása
