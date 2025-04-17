@@ -13,6 +13,7 @@ const fieldElements = [{ //form elemek
     fieldLabel: "Század" //Harmadik elem labelje
 }];
 
-const table = new Table('table'); //Area osztály példányosítása
-const form = new Form('form', fieldElements); //Area osztály példányosítása
+const manager = new Manager(); //Manager példányosítása
+const table = new Table('table', manager); //Area osztály példányosítása
+const form = new Form('form', fieldElements, manager); //Area osztály példányosítása
 

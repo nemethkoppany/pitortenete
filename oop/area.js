@@ -5,15 +5,25 @@ class Area{
      */
     #div //privát változó
 
+    /**
+     * @type {Manager}
+     */
+    #manager //Privát változó
+
     get div(){ //getter, amivel elérjük a div-et
         return this.#div; //visszaadja a div-et
+    }
+
+    get manager(){//manager getter
+        return this.#manager; //Visszatér a managerrel
     }
 
     /**
      * 
      * @param {string} nameOfTheClass 
      */
-    constructor(nameOfTheClass){ //constructor, amiben van a className
+    constructor(nameOfTheClass, manager){ //constructor, amiben van a className és a manager
+        this.#manager = manager//értéket adunk a managernek
         const container = this.#getContainerDiv(); //Meghívjuk a függvényt
         this.#div = document.createElement("div");//Készítünk egy divet
         this.#div.className = nameOfTheClass;//Megadjuk a class-t
@@ -32,9 +42,25 @@ class Area{
 }
 
 class Table extends Area{
-    constructor(nameOfTheClass){
-        super(nameOfTheClass); //A superrel meghívjuk az Area construktorát
+    constructor(nameOfTheClass, manager){ //A Table construktora
+        super(nameOfTheClass, manager); //A superrel meghívjuk az Area construktorát
         const tbody = this.#tableCreation(); //Függvény meghívása
+        this.manager.setaddPiCallback((pi)=>{ //callback-es függvény
+            const tr = document.createElement("tr") //HTML elem létzrehozása
+            tbody.appendChild(tr);//Hozzáadjuk az egyel fölötti réteghez
+        
+            const nametd = document.createElement("td");//HTML elem létzrehozása
+            nametd.textContent = pi.name; //Értékadás
+            tr.appendChild(nametd);//Hozzáadjuk az egyel fölötti réteghez
+        
+            const szamjegytd = document.createElement("td");//HTML elem létzrehozása
+            szamjegytd.textContent = pi.number; //Értékadás
+            tr.appendChild(szamjegytd);//Hozzáadjuk az egyel fölötti réteghez
+        
+            const szazadtd = document.createElement("td");//HTML elem létzrehozása
+            szazadtd.textContent = pi.century; //Értékadás
+            tr.appendChild(szazadtd);//Hozzáadjuk az egyel fölötti réteghez
+        })
     }
 
     #tableCreation(){//Privát függvény
@@ -60,8 +86,8 @@ class Table extends Area{
 }
 
 class Form extends Area{
-    constructor(nameOfTheClass){ //construcor készítése aminek egy paramétere van
-        super(nameOfTheClass, elementsOfField); //A superrel meghívjuk az Area construktorát
+    constructor(nameOfTheClass,elementsOfField,manager){ //construcor készítése aminek egy paramétere van
+        super(nameOfTheClass, manager); //A superrel meghívjuk az Area construktorát
 
         const form = document.createElement('form'); //A form létrehozás
         this.div.appendChild(form); //A form div-hez adása
@@ -87,5 +113,15 @@ class Form extends Area{
         const button = document.createElement("button");//Button létrehozása
         button.textContent = "Hozzáadás"; //Button tartalmának megadása
         form.appendChild(button); //Button formhoz adása
+        form.addEventListener("submit", (e)=>{//Eseménykezelő a submitra
+            e.preventDefault(); //Megakadályozzuk az alapétrelmezett lefutást
+            const inputFieldContents = e.target.querySelectorAll("input")//Megkeressük az inputokat
+            const contentObject = {}; //Objektum létrehozása
+            for(const inputField of inputFieldContents){//Végigmegyünk az inputokon
+                contentObject[inputField.id] = inputField.value;//A contentObject értékének az id-je legyen egynelő az input értékével
+            }
+            const pi_elem = new PiData(contentObject.name, contentObject.number, contentObject.century); //A Pi példányosítása
+            this.manager.addElement(pi_elem);//Metódus meghívása
+        })
     }
 }
