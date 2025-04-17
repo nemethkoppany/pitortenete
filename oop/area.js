@@ -29,23 +29,23 @@ class Area{
 
 class Table extends Area{
     constructor(nameOfTheClass){
-        super(nameOfTheClass); //szuper osztály konstruktora
+        super(nameOfTheClass); //A superrel meghívjuk az Areay construktorát
         const table = document.createElement('table'); //table létrehozás
-        this.div.appendChild(table); //table a divhez adása
+        this.div.appendChild(table); //A table div-hez adása
 
         const thead = document.createElement('thead'); //thead létrehozás
-        table.appendChild(thead); //thead a tablehez adása
+        table.appendChild(thead); //A thead  table-höz adása
 
         const tr = document.createElement('tr'); //tr létrehozás
-        thead.appendChild(tr); //tr a theadhez adása
+        thead.appendChild(tr); //A tr thead-hez adása
 
-        const headerContent = ["Név", "Számjegyek száma", "Század"]; //header tartalom
-        for(const content of headerContent){ //headerContent tömb bejárása
-            const th = document.createElement('th'); //th létrehozás
-            th.innerHTML = content; //th tartalom beállítása
-            tr.appendChild(th); //th a trhez adása
+        const headerContent = ["Név", "Számjegyek száma", "Század"]; //A header tartalma
+        for(const content of headerContent){ //A headerContent tömb bejárása
+            const th = document.createElement('th'); //A th létrehozása
+            th.innerHTML = content; //A th tartalom beállítása
+            tr.appendChild(th); //A th tr-hez adása
         }
-        const tbody = document.createElement('tbody'); //tbody létrehozás
-        table.appendChild(tbody); //tbody a tablehez adása
+        const tbody = document.createElement('tbody'); //A tbody létrehozás
+        table.appendChild(tbody); //A tbody table-höz adása
     }
 }
