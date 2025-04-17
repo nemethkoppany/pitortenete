@@ -14,22 +14,30 @@ class Area{
      * @param {string} nameOfTheClass 
      */
     constructor(nameOfTheClass){ //constructor, amiben van a className
+        const container = this.#getContainerDiv(); //Meghívjuk a függvényt
+        this.#div = document.createElement("div");//Készítünk egy divet
+        this.#div.className = nameOfTheClass;//Megadjuk a class-t
+        container.appendChild(this.#div)//Hozzárakjuk a div-et a containerhez
+    }
+
+    #getContainerDiv(){ //Új privát függvény
         let divContainer = document.querySelector('.containeroop'); //container kiválasztása
         if(!divContainer){ //ha nincs container, akkor létrehoz egyet
             divContainer = document.createElement('div'); //container létrehozás
             divContainer.className = 'containeroop'; //className beállítása
             document.body.appendChild(divContainer); //container a body-hoz adása
         }
-
-        this.#div = document.createElement('div'); //div létrehozás
-        this.#div.className = nameOfTheClass; //className beállítása
-        divContainer.appendChild(this.#div); //div a containerhez adása
+        return divContainer; //Visszatérünk a divContainerrel
     }
 }
 
 class Table extends Area{
     constructor(nameOfTheClass){
         super(nameOfTheClass); //A superrel meghívjuk az Area construktorát
+        const tbody = this.#tableCreation(); //Függvény meghívása
+    }
+
+    #tableCreation(){//Privát függvény
         const table = document.createElement('table'); //table létrehozás
         this.div.appendChild(table); //A table div-hez adása
 
@@ -47,26 +55,17 @@ class Table extends Area{
         }
         const tbody = document.createElement('tbody'); //A tbody létrehozás
         table.appendChild(tbody); //A tbody table-höz adása
+        return tbody; //Visszatérünk a tbody-val
     }
 }
 
 class Form extends Area{
     constructor(nameOfTheClass){ //construcor készítése aminek egy paramétere van
-        super(nameOfTheClass); //A superrel meghívjuk az Area construktorát
+        super(nameOfTheClass, elementsOfField); //A superrel meghívjuk az Area construktorát
 
         const form = document.createElement('form'); //A form létrehozás
         this.div.appendChild(form); //A form div-hez adása
-        const elementsOfField = [{ //form elemek
-            fieldid: "name", //Első elem id-je
-            fieldLabel: "Név" //Első eleme labelje
-        },
-        {
-            fieldid: "number", //Második elem id-je
-            fieldLabel: "Számjegyek száma" //Második elem labelje
-        }, { 
-            fieldid: "century", //Harmadik elem id-je
-            fieldLabel: "Század" //Harmadik elem labelje
-        }];
+       
 
         for(const element of elementsOfField){
             const field = divMaker('field'); //field létrehozás
