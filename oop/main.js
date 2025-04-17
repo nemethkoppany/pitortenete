@@ -2,5 +2,5 @@ const separator = document.createElement('hr'); // hogy a html-en egyszeruen meg
 document.body.appendChild(separator); //Az elválasztó body-hoz adása
 
 const table = new Table('table'); //Area osztály példányosítása
-const form = new Area('form'); //Area osztály példányosítása
+const form = new Form('form'); //Area osztály példányosítása
 

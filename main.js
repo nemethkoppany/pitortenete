@@ -64,5 +64,9 @@ for(const fieldElement of elementsOfField){//fieldElement tömb bejárása
     field.appendChild(input); //Az input field-hez adása
 }
 
+const buttonRegular = document.createElement("button"); //Button létrehozása
+buttonRegular.textContent = "Hozzáadás";//A button tartalma
+formRegular.appendChild(buttonRegular); //A button formhoz adása
+
 divAsAContainer.appendChild(divTable); //A table container-hez adása
 divAsAContainer.appendChild(divForm); //A form container-hez adása
