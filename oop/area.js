@@ -131,6 +131,42 @@ class Form extends Area{
     }
 }
 
+class Upload extends Area{
+    /**
+     * 
+     * @param {string} nameOfTheClass 
+     * @param {Manager} manager 
+     */
+    constructor(nameOfTheClass, manager){//Contructor két bemeneti paraméterrel
+        super(nameOfTheClass, manager); //Ezzel meghívjuk az Area class constructorát
+
+        const input = document.createElement("input")//input készítése
+        input.id ="fileinput"//id megadása
+        input.type = "file"; //Típus megadása
+        this.div.appendChild(input)//Belerakjuk a divbe
+
+        input.addEventListener("change", (e)=>{
+            const file = e.target.files[0];//Kiválasztjuk a fájlt
+            const reader = new FileReader(); //Beolvassuk azt
+        
+            reader.onload = () =>{//Betöltésnél
+                const fileSperator = reader.result.split("\n")//Elválasztjuk a fájl külön részeit
+                const headlinesRemover = fileSperator.slice(1); //Leszedjük a fejlécet
+        
+                for(const line of headlinesRemover){//Végigmegyünk a fájlon
+                    const trimmer = line.trim(); //Leszedjük a felesleges részeket
+                    const fields = trimmer.split(";") //A pontosvesszőnél elválasztjuk a részeket
+                    const pi = new PiData(fields[0], fields[1], fields[2])//Létrhozunk egy új elemet
+                    this.manager.addElement(pi);//Hozzáadjuk az addElement segítségével
+                }
+            }
+            reader.readAsText(file);//Megmondjuk neki, hogy szövegként olvassa be
+        })
+
+    }
+}
+
+
 class FormField{
     /**
      * @type {string}
@@ -164,6 +200,11 @@ class FormField{
         this.#errorElement.textContent = value; //Az elem-be legyen a value írva
     }
 
+    /**
+     * 
+     * @param {string} id 
+     * @param {string} labelText 
+     */
     constructor(id, labelText){//constructor két bemeneti paraméterrel
         this.#id = id //Értékadás
         this.#labelElement = document.createElement("label")//Készítünk egy labelt

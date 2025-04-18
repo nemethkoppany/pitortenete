@@ -14,6 +14,7 @@ const fieldElements = [{ //form elemek
 }];
 
 const manager = new Manager(); //Manager példányosítása
-const table = new Table('table', manager); //Area osztály példányosítása
-const form = new Form('form', fieldElements, manager); //Area osztály példányosítása
+const table = new Table('table', manager); //Table osztály példányosítása
+const form = new Form('form', fieldElements, manager); //Form osztály példányosítása
+const upload = new Upload("upload", manager)//Upload osztály példányosítása
 
