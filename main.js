@@ -28,116 +28,34 @@ const filter = (piArray, callback)=>{//Arrpw function két bemeneti paraméterre
     return result; // Visszatérünk a szűrt tömbbel
 }
 
-const divAsAContainer = divMaker('container'); //container létrehozás
-document.body.appendChild(divAsAContainer); //A container body-hoz adása
-const divTable = divMaker('table');  //table létrehozás
+const tableCreation = (container, callback) =>{//Arrow function
+    const divThatsATable = divMaker("table"); //div létrehozása classNameel
+    container.appendChild(divThatsATable);
 
+    const tableRegular = document.createElement("table")//Valódi table létrehozása
+    divThatsATable.appendChild(tableRegular); //Hozzáadjuk a divhez a table-t
 
-const tableRegular = document.createElement('table'); //table létrehozás
-divTable.appendChild(tableRegular); //A table divhez adása
+    const thead = document.createElement("thead")//A thead készítése
+    tableRegular.appendChild(thead); //Hozzáadjuk a table-höz
 
-const thead = document.createElement('thead'); //thead létrehozás
-tableRegular.appendChild(thead); //A thead table-höz adása
+    const tr = document.createElement("tr");//tr készytése
+    thead.appendChild(tr); //Hozzáadjuk a thead-hez
 
-const tr = document.createElement('tr'); //tr létrehozás
-thead.appendChild(tr); //A tr thead-hez adása
-
-const headerContent = ["Név", "Számjegyek száma", "Század"]; //header tartalom
-for(const content of headerContent){ //headerContent tömb bejárása
-    const th = document.createElement('th'); //th létrehozás
-    th.innerHTML = content; //th tartalom beállítása
-    tr.appendChild(th); //A th tr-hez adása
-}
-const tbody = document.createElement('tbody'); //tbody létrehozás
-tableRegular.appendChild(tbody); //A tbody tablehez adása
-
-const divForm = divMaker('form'); //form létrehozás
-
-const formRegular = document.createElement('form'); //form létrehozás
-divForm.appendChild(formRegular); //A form div-hez adása
-
-const elementsOfField = [{ //form elemek
-    fieldid: "name", //Első elem id-je
-    fieldLabel: "Név" //Első eleme labelje
-},
-{
-    fieldid: "number", //Második elem id-je
-    fieldLabel: "Számjegyek száma" //Második elem labelje
-}, { 
-    fieldid: "century", //Harmadik elem id-je
-    fieldLabel: "Század" //Harmadik elem labelje
-}]; 
-
-for(const fieldElement of elementsOfField){//fieldElement tömb bejárása
-    const field = divMaker('field'); //field létrehozás
-    formRegular.appendChild(field); //A field form-hoz adása
-
-    const label = document.createElement('label'); //label létrehozás
-    label.innerHTML = fieldElement.fieldLabel; //label tartalom beállítása
-    label.htmlFor = fieldElement.fieldid; //label htmlFor beállítása
-    field.appendChild(label); //A label fieldh-ez adása
-
-    field.appendChild(document.createElement("br"))//Sortörés hozzáadása a fieldhez
-
-    const input = document.createElement('input'); //input létrehozás
-    input.id = fieldElement.fieldid; //input id beállítása
-    field.appendChild(input); //Az input field-hez adása
-    
-    field.appendChild(document.createElement("br"))//Sortörés hozzáadása a fieldhez
-
-    const error = document.createElement("span") //error span létrehozása
-    error.className = "error"; //Adunk neki egy class-t
-    field.appendChild(error); //Hozzárakjuk a fieldhez
+    const headerContent = ["Név", "Számjegyek száma", "Század"];//Tömb amiben a fejléc tartalma van
+    for(const content of headerContent){//Végigmegyünk a tömbön
+        const th = document.createElement("th");//th készytése
+        th.innerText = content //A szöveg az aktuális tartalom lesz
+        tr.appendChild(th); //Hozzáadjuk a tr-hez
+    }
+    const tbody = document.createElement("tbody");//Készytünk egy tbody-t
+    tableRegular.appendChild(tbody);//Amit hozzárakunk a table-höz
+    callback(tbody);// Meghívjuk a callback függvényt, aminek átadjuk a tbody-t
 }
 
-const buttonRegular = document.createElement("button"); //Button létrehozása
-buttonRegular.textContent = "Hozzáadás";//A button tartalma
-formRegular.appendChild(buttonRegular); //A button formhoz adása
 
-formRegular.addEventListener("submit", (e)=>{//Eventlistener a submit eseményre
-    e.preventDefault(); //Alapétrelmezett végrehajtás megakadályozása
-
-    const contentObject = {} //Objektum létrehozása
-    const inputs = e.target.querySelectorAll("input") //Megkeressük az összes inputot
-    let isValid = true; //az isValid alapétrelmezett értéke true
-    for(const input of inputs){ //Végigmegyünk az inputokon
-        const error = input.parentElement.querySelector(".error"); //Eltároljuk egy változóban az első error classú elemet
-        if(!error){//Ha nincs ilyen elem
-            console.error("nincs errorfield") //Írjon ki hibaüzenetet
-            return; //Lépjünk ki az if-ből
-        }
-        error.textContent ="";//Töröljük a hibaüzenetet
-        if(input.value === ""){//Ha nincs semmi a bementi mezőben
-            error.textContent = "Kötelező kitölteni" //Adjon hibát;
-            isValid = false; //És legyen az isValid értéke false;
-        }
-
-        contentObject[input.id] = input.value; //A contentObject értékének az id-je legyen egynelő az input értékével
-    }
-    if(isValid){//Ha az isValid értéke igaz maradt
-        tomb.push(contentObject); //És azt töltsük bele a táblázatba
-    const tr = document.createElement("tr") //HTML elem létzrehozása
-    tbody.appendChild(tr);//Hozzáadjuk az egyel fölötti réteghez
-
-    const nametd = document.createElement("td");//HTML elem létzrehozása
-    nametd.textContent = contentObject.name; //Értékadás
-    tr.appendChild(nametd);//Hozzáadjuk az egyel fölötti réteghez
-
-    const szamjegytd = document.createElement("td");//HTML elem létzrehozása
-    szamjegytd.textContent = contentObject.number; //Értékadás
-    tr.appendChild(szamjegytd);//Hozzáadjuk az egyel fölötti réteghez
-
-    const szazadtd = document.createElement("td");//HTML elem létzrehozása
-    szazadtd.textContent = contentObject.century; //Értékadás
-    tr.appendChild(szazadtd);//Hozzáadjuk az egyel fölötti réteghez
-    }
-});
-
-divAsAContainer.appendChild(divTable); //A table container-hez adása
-divAsAContainer.appendChild(divForm); //A form container-hez adása
-
-const inputForFile = document.createElement("input")//input készítése
-divAsAContainer.appendChild(inputForFile); //Hozzáadom a container-hez
+const uploading = (tbody, container, piArray) =>{
+    const inputForFile = document.createElement("input")//input készítése
+container.appendChild(inputForFile); //Hozzáadom a container-hez
 inputForFile.id ="fileinput"//id megadása
 inputForFile.type = "file"; //Typus megadása
 
@@ -159,36 +77,121 @@ inputForFile.addEventListener("change", (e)=>{//eventlistener a changere
                 century: fields[2]//harmadik rész
             };
 
-            tomb.push(pi); //Belerakjuk a tömbbe
+            piArray.push(pi); //Belerakjuk a tömbbe
+            addTheRow(pi, tbody)//Meghíjuk az addTheRow metódust
+        }
+    }
+    reader.readAsText(file);//Szövegként olvassa 
+});
+        
+}
+    
+const formCreation = (tbody, container, piArray) =>{//Arrow function
+    const formDiv = divMaker("form");//div kreálás
+    container.appendChild(formDiv);//Hozzáadjuk a ocntainerhez
 
-            const tr = document.createElement("tr"); //HTML elem létrehozása
-            tbody.appendChild(tr);//Az egyel fölötte lévő elembe rakása
+    const formRegular = document.createElement("form");//Form készítése
+    formDiv.appendChild(formRegular);//Hozzáadjuk a div-hez
 
-            const name = document.createElement("td");//HTML elem létrehozása
-            name.textContent = pi.name;//textContent megadása
+    const elements = [
+        {
+            fieldid:"name",//Első elem értéke
+            fieldLabel: "Név"//Első elem szövege
+        },
+        {
+            fieldid:"number",//Második elem értéke
+            fieldLabel: "Számjegyek száma"//Második elem szövege
+        },
+        {
+            fieldid:"century",//Harmadik elem értéke
+            fieldLabel: "Század"//Harmadik elem szövege
+        }
+    ];
+
+        for(const element of elements){//Végigmegyünk az objektumokon
+            const fieldDiv = divMaker("field")//Egy div készytése aminek a className-je field
+            formRegular.appendChild(fieldDiv); //Hozzáadjuk ezt a táblázathoz
+            
+            const label = document.createElement("label")//label elem létrehozása
+            label.htmlFor = element.fieldid//A label id-jének megadása
+            label.textContent = element.fieldLabel//A label szövegének megadása
+            fieldDiv.appendChild(label)//A labelt hozzáadjuk a fieldDiv-hez
+
+            fieldDiv.appendChild(document.createElement("br"))//Hozzáadunk egy sortörést
+
+            const input = document.createElement("input")//Bemeneti mező létrehozása
+            input.id = element.fieldid; //Az input id-jének megadása
+            fieldDiv.appendChild(input);//Hozzáadjuk a div-hez az inputot
+
+            fieldDiv.appendChild(document.createElement("br"))//Hozzáadunk egy sortörést
+
+            const error = document.createElement("span"); //Span elem készytése
+            error.className = "error"; //Megadjuk a class-át is
+            fieldDiv.appendChild(error); //Ezt is hozzáadjuk a div-hez
+            }
+        
+   
+        const buttonRegular = document.createElement("button")//Gomb létrehozása
+        buttonRegular.textContent = "Hozzáadás"; //A gomb szövegének megadása
+        formRegular.appendChild(buttonRegular);//A gomb hozzáadása a formhoz
+
+        formRegular.addEventListener("submit", (e)=>{//A formRegular submit eseményére egy eventListener
+            e.preventDefault(); //Megakadályozzuk az alapértelmezett működést
+
+            const contentObject = {}//Objektum létrehozása
+
+            const inputFields = e.target.querySelectorAll("input");//Megkeressük az összes inputot
+
+            let isValid = true; //Az isValid alapértelmezett értéke igaz;
+            for(const inputField of inputFields){
+                const error = inputField.parentElement.querySelector('.error');// Kiválasztjuk a hibaüzenet span elemet
+                if(!error){//Ha nincs ilyen class-ú elem
+                    console.error("Nincs errorfield")//Kiírjuk, hogy nincs errorfield
+                    return; //És kilépünk
+                }
+                error.textContent =""//Kitötljük a hibaüzenetet
+                if(inputField.value === ""){//Ha nincs értéke valamelyik bemeneti mezőnek
+                    error.textContent = "Kötelező megadni"; //Adjon hibaüzenetet
+                    isValid = false; //És legyen az isValid false
+                }
+                contentObject[inputField.id] = inputField.value; //A contentObject értékének az id-je legyen egynelő az inputField értékével
+            }
+            if(isValid){//Ha az isValid értéke igaz
+                piArray.push(contentObject);//Felpusholjuk a tömbbe az obejektumot
+                addTheRow(contentObject, tbody);//Meghívjük az addTheRow függvényt
+            }
+        })    
+}
+   
+const addTheRow = (object, tbody) =>{//Arrow function
+    const tr = document.createElement("tr"); //HTML elem létrehozása
+    tbody.appendChild(tr); //Hozzáadjuk a tbody-hoz
+
+    const name = document.createElement("td");//HTML elem létrehozása
+            name.textContent = object.name;//textContent megadása
             tr.appendChild(name);//Az egyel fölötte lévő elembe rakása
 
             const number = document.createElement("td");//HTML elem létrehozása
-            number.textContent = pi.number;//textContent megadása
+            number.textContent = object.number;//textContent megadása
             tr.appendChild(number);//Az egyel fölötte lévő elembe rakása
 
             const century = document.createElement("td");//HTML elem létrehozása
-            century.textContent = pi.century;//textContent megadása
+            century.textContent = object.century;//textContent megadása
             tr.appendChild(century);//Az egyel fölötte lévő elembe rakása
-        }
-    }
-    reader.readAsText(file);//Megmondjuk neki, hogy szövegként olvassa be
-});
+}
 
-const downloadButton = document.createElement("button"); //gomb létrehozása
+
+
+const download = (container, piArray) =>{//Arrow function
+    const downloadButton = document.createElement("button"); //gomb létrehozása
 downloadButton.textContent = "Letöltés";
-divAsAContainer.appendChild(downloadButton); //A containerhez adás
+container.appendChild(downloadButton); //A containerhez adás
 
 downloadButton.addEventListener("click", ()=>{//Eventlistener a gomb lenyomására
     const link = document.createElement("a"); //Link képezése
     const arrayContents = ["name,number,century"]; //Egy tömb amiben benne vamnak a különböző rublikák
 
-    for(const pi of tomb){//Végigmegyünk a tömbön
+    for(const pi of piArray){//Végigmegyünk a tömbön
         arrayContents.push(`${pi.name};${pi.number};${pi.century}`); //Feltöltjuk egy sorként a tömbbe az adatokat
     }
     const innerText = arrayContents.join("\n");// A tömböt egy stringgé alakítjuk
@@ -198,9 +201,11 @@ downloadButton.addEventListener("click", ()=>{//Eventlistener a gomb lenyomásá
     link.click(); // A linkre kattintunk, hogy letöltsük a fájlt
     URL.revokeObjectURL(link.href);// A Blob objektum URL-jét visszavonjuk
 });
+}
 
-const filterFormDiv = divMaker("filterform"); //Készítünk egy divet aminek adunk egy class-t
-divAsAContainer.appendChild(filterFormDiv); //Hozzáadjuk a containerhez
+const filteredForm = (container, tbody, piArray) =>{
+    const filterFormDiv = divMaker("filterform"); //Készítünk egy divet aminek adunk egy class-t
+container.appendChild(filterFormDiv); //Hozzáadjuk a containerhez
 
 const formForFilter = document.createElement("form")//form létrehozása
 filterFormDiv.appendChild(formForFilter);//Hozzáadjuk a div-hez
@@ -247,7 +252,7 @@ formForFilter.addEventListener("submit", (e)=>{//eventlistener a formForFilter s
     const filterInput = e.target.querySelector("#filterInput"); //Megkeressük a filterInput id-jű inputot
     const select = e.target.querySelector("select");//Megkeressük a selectet
 
-    const ArrayThatIsFiltered = filter(tomb, (element)=>{//Változóban eltárolt arrow function
+    const ArrayThatIsFiltered = filter(piArray, (element)=>{//Változóban eltárolt arrow function
         if(select.value == "name"){//Ha a kiválasztott opció  értéke name
             if(filterInput.value === element.name){//És az input értéke megegyezik a névvel
                 return true;//Térjen vissza igazzal
@@ -271,19 +276,17 @@ formForFilter.addEventListener("submit", (e)=>{//eventlistener a formForFilter s
     tbody.innerHTML ="" //Kitöröljük a tbody tartalmát
     
     for(const element of ArrayThatIsFiltered){//Végigmegyünk a tömbön
-        const tr = document.createElement("tr")//HTML elem készítése
-        tbody.appendChild(tr)//Hozzárakjuk az egyel fentebbi elemhez
-
-        const name = document.createElement("td");//Végigmegyünk a tömbön
-        name.innerHTML = element.name; //Az szövegének megadása
-        tr.appendChild(name);//Hozzárakjuk az egyel fentebbi elemhez
-
-        const number = document.createElement("td");//Végigmegyünk a tömbön
-        number.innerHTML = element.number; //Az szövegének megadása
-        tr.appendChild(number);//Hozzárakjuk az egyel fentebbi elemhez
-
-        const century = document.createElement("td");//Végigmegyünk a tömbön
-        century.innerHTML = element.century; //Az szövegének megadása
-        tr.appendChild(century);//Hozzárakjuk az egyel fentebbi elemhez
+        addTheRow(element, tbody);
     }
+})
+}
+
+const containerDiv = divMaker("container")//Készytünk egy div-et és adunk neki egy container class-t
+document.body.appendChild(containerDiv); //Hozzáadjuk a containerDivet a bodyhoz
+
+tableCreation(containerDiv, (bodyOfTable)=>{
+    formCreation(bodyOfTable, containerDiv, tomb);
+    uploading(bodyOfTable,containerDiv, tomb);
+    download(containerDiv,tomb);
+    filteredForm(containerDiv,bodyOfTable,tomb);
 })
