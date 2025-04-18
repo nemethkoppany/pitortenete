@@ -162,3 +162,22 @@ inputForFile.addEventListener("change", (e)=>{//eventlistener a changere
     }
     reader.readAsText(file);//Megmondjuk neki, hogy szövegként olvassa be
 });
+
+const downloadButton = document.createElement("button"); //gomb létrehozása
+downloadButton.textContent = "Letöltés";
+divAsAContainer.appendChild(downloadButton); //A containerhez adás
+
+downloadButton.addEventListener("click", ()=>{//Eventlistener a gomb lenyomására
+    const link = document.createElement("a"); //Link képezése
+    const arrayContents = ["name,number,century"]; //Egy tömb amiben benne vamnak a különböző rublikák
+
+    for(const pi of tomb){//Végigmegyünk a tömbön
+        arrayContents.push(`${pi.name};${pi.number};${pi.century}`); //Feltöltjuk egy sorként a tömbbe az adatokat
+    }
+    const innerText = arrayContents.join("\n");// A tömböt egy stringgé alakítjuk
+    const blob = new Blob([innerText]);// Létrehozunk egy Blob objektumot, amiben a szöveg van
+    link.href = URL.createObjectURL(blob);// A link href attribútuma a Blob objektum URL-je
+    link.download = "ujabb_pi.csv";// A link letöltési neve 
+    link.click(); // A linkre kattintunk, hogy letöltsük a fájlt
+    URL.revokeObjectURL(link.href);// A Blob objektum URL-jét visszavonjuk
+});
