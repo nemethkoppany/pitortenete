@@ -28,6 +28,11 @@ const filter = (piArray, callback)=>{//Arrpw function két bemeneti paraméterre
     return result; // Visszatérünk a szűrt tömbbel
 }
 
+/**
+ * 
+ * @param {HTMLDivElement} container 
+ * @param {function(HTMLElement): void} callback 
+ */
 const tableCreation = (container, callback) =>{//Arrow function
     const divThatsATable = divMaker("table"); //div létrehozása classNameel
     container.appendChild(divThatsATable);
@@ -52,7 +57,12 @@ const tableCreation = (container, callback) =>{//Arrow function
     callback(tbody);// Meghívjuk a callback függvényt, aminek átadjuk a tbody-t
 }
 
-
+/**
+ * 
+ * @param {HTMLElement} tbody 
+ * @param {HTMLDivElement} container 
+ * @param {tomb[]} piArray 
+ */
 const uploading = (tbody, container, piArray) =>{
     const inputForFile = document.createElement("input")//input készítése
 container.appendChild(inputForFile); //Hozzáadom a container-hez
@@ -86,6 +96,12 @@ inputForFile.addEventListener("change", (e)=>{//eventlistener a changere
         
 }
     
+/**
+ * 
+ * @param {HTMLElement} tbody 
+ * @param {HTMLDivElement} container 
+ * @param {tomb[]} piArray 
+ */
 const formCreation = (tbody, container, piArray) =>{//Arrow function
     const formDiv = divMaker("form");//div kreálás
     container.appendChild(formDiv);//Hozzáadjuk a ocntainerhez
@@ -163,6 +179,11 @@ const formCreation = (tbody, container, piArray) =>{//Arrow function
         })    
 }
    
+/**
+ * 
+ * @param {pi} object 
+ * @param {HTMLElement} tbody 
+ */
 const addTheRow = (object, tbody) =>{//Arrow function
     const tr = document.createElement("tr"); //HTML elem létrehozása
     tbody.appendChild(tr); //Hozzáadjuk a tbody-hoz
@@ -181,7 +202,11 @@ const addTheRow = (object, tbody) =>{//Arrow function
 }
 
 
-
+/**
+ * 
+ * @param {HTMLDivElement} container 
+ * @param {{name: string, number: number, century:number}[]} piArray 
+ */
 const download = (container, piArray) =>{//Arrow function
     const downloadButton = document.createElement("button"); //gomb létrehozása
 downloadButton.textContent = "Letöltés";
@@ -203,6 +228,12 @@ downloadButton.addEventListener("click", ()=>{//Eventlistener a gomb lenyomásá
 });
 }
 
+/**
+ * 
+ * @param {HTMLDivElement} container 
+ * @param {HTMLElement} tbody 
+ * @param {tomb[]} piArray 
+ */
 const filteredForm = (container, tbody, piArray) =>{
     const filterFormDiv = divMaker("filterform"); //Készítünk egy divet aminek adunk egy class-t
 container.appendChild(filterFormDiv); //Hozzáadjuk a containerhez
