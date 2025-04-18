@@ -86,28 +86,25 @@ class Table extends Area{
 }
 
 class Form extends Area{
+
+    /**
+     * @type {{fieldid: string, fieldLabel:string}[]}
+     */
+    #arrayForFormField //Privát változó
+
     constructor(nameOfTheClass,elementsOfField,manager){ //construcor készítése aminek egy paramétere van
         super(nameOfTheClass, manager); //A superrel meghívjuk az Area construktorát
+
+        this.#arrayForFormField = []; //Készítünk egy tömböt
 
         const form = document.createElement('form'); //A form létrehozás
         this.div.appendChild(form); //A form div-hez adása
        
 
-        for(const element of elementsOfField){
-            const field = divMaker('field'); //field létrehozás
-            form.appendChild(field); //A field form-hoz adása
-            
-            const label = document.createElement('label'); //A label létrehozása
-            label.innerHTML = element.fieldLabel; //A label tartalom beállítása
-            label.htmlFor = element.fieldid; //A label htmlFor beállítása
-
-            field.appendChild(label); //A label field-hez adása
-
-            const input = document.createElement('input'); //Az input létrehozása
-            input.id = element.fieldid; //Az input id beállítása
-
-            field.appendChild(document.createElement("br")) //A br elem létrehozása és hozzáadása a fieldhez
-            field.appendChild(input) //Az input hozzáadása a field-hez
+        for(const element of elementsOfField){ //Végigmegyünk a field elemein
+           const formField = new FormField(element.fieldid, element.fieldLabel); //Példányosítjuk a FormField-et
+           this.#arrayForFormField.push(formField); //Feltöltjük a tömbbe
+           form.appendChild(formField.getDiv()); //Belerakjuk a formba a formfield-re meghívott getDiv metódust
         }
 
         const button = document.createElement("button");//Button létrehozása
@@ -124,4 +121,64 @@ class Form extends Area{
             this.manager.addElement(pi_elem);//Metódus meghívása
         })
     }
+}
+
+class FormField{
+    /**
+     * @type {string}
+     */
+    #id //privát változó
+
+    /**
+     * @type {HTMLElement}
+     */
+    #inputElement//privát változó
+
+     /**
+     * @type {HTMLElement}
+     */
+    #labelElement//privát változó
+
+     /**
+     * @type {HTMLElement}
+     */
+    #errorElement//privát változó
+
+    get id(){ //getter definiálása
+        return this.#id;//Visszatérünk a privát változóval
+    }
+
+    get value(){//getter definiálása
+        return this.#inputElement.value; //Térjünk vissza a privát változó értékével
+    }
+
+    set error(value){//setter definiálása
+        this.#errorElement.textContent = value; //Az elem-be legyen a value írva
+    }
+
+    constructor(id, labelText){//constructor két bemeneti paraméterrel
+        this.#id = id //Értékadás
+        this.#labelElement = document.createElement("label")//Készítünk egy labelt
+        this.#labelElement.htmlFor = id; //id megadása
+        this.#labelElement.textContent = labelText; //A kiírt szöveg
+
+        this.#inputElement = document.createElement("input");//Készítünk egy inputot
+        this.#inputElement.id = id; //id megadása
+        
+        this.#errorElement = document.createElement("span"); //Span készytése
+        this.#errorElement.className = "error"; //Class megadása
+    }
+
+    getDiv(){//getDiv metódus
+        const div = divMaker("field")//Div készítése és field class név megadása
+        const breaker = document.createElement("br")//br készítése
+        const breaker2 = document.createElement("br")//br készítése
+        const elements = [this.#labelElement, breaker, this.#inputElement, breaker2, this.#errorElement]; //Egy tömbbe eltároljuk az elemeket
+        for(const element of elements){//Végigmegyünk a tömbön
+            div.appendChild(element); //Hozzáadjuk a divhez
+        }
+        return div; //Visszatérünk a divvel
+    }
+
+
 }
