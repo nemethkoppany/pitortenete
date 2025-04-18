@@ -198,6 +198,8 @@ const addTheRow = (object, tbody) =>{//Arrow function
             const century = document.createElement("td");//HTML elem létrehozása
             century.textContent = object.century;//textContent megadása
             tr.appendChild(century);//Az egyel fölötte lévő elembe rakása
+
+           
 }
 
 
@@ -289,12 +291,12 @@ formForFilter.addEventListener("submit", (e)=>{//eventlistener a formForFilter s
             }
         }
         else if(select.value == "number"){//Ha a kiválasztott opció  értéke number
-            if(Number(filterInput.value) === Number(element.number)){//És az input értéke megegyezik a numberrel
+            if(filterInput.value === element.number){//És az input értéke megegyezik a numberrel
                 return true;//Térjen vissza igazzal
             }
         }
         else if(select.value == "century"){//Ha a kiválasztott opció  értéke century
-            if(Number(filterInput.value) ===Number( element.century)){//És az input értéke megegyezik a centuryval
+            if(filterInput.value === element.century){//És az input értéke megegyezik a centuryval
                 return true;//Térjen vissza igazzal
             }
         }

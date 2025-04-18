@@ -66,7 +66,7 @@ class Manager{
     downloadableString(){
         const result = ["name, number, century"];//Egy tömb amiben benne vamnak a különböző rublikák
         for(const pi of this.#tomb){// Végigmegyünk a forradalom tömbön
-            result.push(`${pi.name};${pi.number};${pi.century}`);// A tömbhöz hozzáadjuk az új sorokat
+            result.push(`${pi.name};${Number(pi.number)};${Number(pi.century)}`);// A tömbhöz hozzáadjuk az új sorokat
         }
         return result.join("\n"); // A tömböt egy stringgé alakítjuk
     }

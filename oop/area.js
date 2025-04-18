@@ -30,6 +30,10 @@ class Area{
         container.appendChild(this.#div)//Hozzárakjuk a div-et a containerhez
     }
 
+    /**
+     * 
+     * @returns {HTMLDivElement};
+     */
     #getContainerDiv(){ //Új privát függvény
         let divContainer = document.querySelector('.containeroop'); //container kiválasztása
         if(!divContainer){ //ha nincs container, akkor létrehoz egyet
@@ -39,42 +43,58 @@ class Area{
         }
         return divContainer; //Visszatérünk a divContainerrel
     }
+
+    /**
+     * 
+     * @param {string} textContent 
+     * @returns {HTMLElement}
+     */
+    buttonCreator(textContent){ //Egy metódus a gomb készítéséhez
+        const button = document.createElement("button"); //Button készytése
+        button.textContent = textContent;//Megadjuk a gomb szövegét
+        return button; //Vissztérünk a gombbal
+    }
 }
 
 class Table extends Area{
     constructor(nameOfTheClass, manager){ //A Table construktora
         super(nameOfTheClass, manager); //A superrel meghívjuk az Area construktorát
         const tbody = this.#tableCreation(); //Függvény meghívása
-        this.manager.setaddPiCallback((pi)=>{ //callback-es függvény
+       
+        this.manager.setaddPiCallback(this.#addPiCallback(tbody));
+        this.manager.setTableRendererCallback(this.#tableCallbackRenderer(tbody));
+    }
 
-            this.#piRowCreator(pi, tbody);
-        })
-
-        this.manager.setTableRendererCallback((piArray)=>{//Meghívjuk a setTableRendererCallback metódust
-            tbody.innerHTML ="" //kitöröljük a tbody tartalmát
-            for(const pi of piArray){//Végigmegyünk a tömbön
-                this.#piRowCreator(pi, tbody); //meghívjuk a #piRowCreator privát metódust
+    #tableCallbackRenderer(tbody){
+        return (tomb) => {
+            tbody.innerHTML = "";
+            for(const pi of tomb){
+                this.#piRowCreator(pi, tbody);
             }
-        })
+        }
+    }
+
+    #addPiCallback(tbody){
+        return(pi) => {
+            this.#piRowCreator(pi, tbody);
+        }
     }
 
     #piRowCreator(pi, tbody){//Privát metódus
         const tr = document.createElement("tr") //HTML elem létzrehozása
         tbody.appendChild(tr);//Hozzáadjuk az egyel fölötti réteghez
     
-        const nametd = document.createElement("td");//HTML elem létzrehozása
-        nametd.textContent = pi.name; //Értékadás
-        tr.appendChild(nametd);//Hozzáadjuk az egyel fölötti réteghez
-    
-        const szamjegytd = document.createElement("td");//HTML elem létzrehozása
-        szamjegytd.textContent = pi.number; //Értékadás
-        tr.appendChild(szamjegytd);//Hozzáadjuk az egyel fölötti réteghez
-    
-        const szazadtd = document.createElement("td");//HTML elem létzrehozása
-        szazadtd.textContent = pi.century; //Értékadás
-        tr.appendChild(szazadtd);//Hozzáadjuk az egyel fölötti réteghez
+        this.#createTD(tbody, pi.name);
+        this.#createTD(tbody, Number(pi.number));
+        this.#createTD(tbody, Number(pi.century));
     }
 
+
+    #createTD(row, textContent, type = "td"){
+        const td = document.createElement(type);
+        td.textContent = textContent;
+        row.appendChild(td);
+    }
 
     /**
      * 
@@ -92,9 +112,7 @@ class Table extends Area{
 
         const headerContent = ["Név", "Számjegyek száma", "Század"]; //A header tartalma
         for(const content of headerContent){ //A headerContent tömb bejárása
-            const th = document.createElement('th'); //A th létrehozása
-            th.innerHTML = content; //A th tartalom beállítása
-            tr.appendChild(th); //A th tr-hez adása
+           this.#createTD(tr, content, "th");
         }
         const tbody = document.createElement('tbody'); //A tbody létrehozás
         table.appendChild(tbody); //A tbody table-höz adása
@@ -114,37 +132,58 @@ class Form extends Area{
 
         this.#arrayForFormField = []; //Készítünk egy tömböt
 
+        const form = this.#formCreation(elementsOfField);
+        form.addEventListener("submit", this.#submitEventListener());
+    }
+
+    #submitEventListener(){
+        return (e) =>{
+        e.preventDefault();
+        if(this.#validateFields()){
+            const contentObject = this.#getContentObject();
+            const pi = new PiData(contentObject.name, Number(contentObject.number), Number(contentObject.century));
+            this.manager.addElement(pi);
+        }
+
+
+    }
+    }
+
+    #formCreation(fieldList){
+
         const form = document.createElement('form'); //A form létrehozás
         this.div.appendChild(form); //A form div-hez adása
        
 
-        for(const element of elementsOfField){ //Végigmegyünk a field elemein
+        for(const element of fieldList){ //Végigmegyünk a field elemein
            const formField = new FormField(element.fieldid, element.fieldLabel); //Példányosítjuk a FormField-et
            this.#arrayForFormField.push(formField); //Feltöltjük a tömbbe
            form.appendChild(formField.getDiv()); //Belerakjuk a formba a formfield-re meghívott getDiv metódust
         }
-
-        const button = document.createElement("button");//Button létrehozása
-        button.textContent = "Hozzáadás"; //Button tartalmának megadása
+        const button = this.buttonCreator("Hozzáadás")
         form.appendChild(button); //Button formhoz adása
-        form.addEventListener("submit", (e)=>{//Eseménykezelő a submitra
-            e.preventDefault(); //Megakadályozzuk az alapétrelmezett lefutást
-           
-            const contentObject = {}; //Objektum létrehozása
-            let isValid = true; //Alapértelmezetten igaz
-            for(const formField of this.#arrayForFormField){//Végigmegyünk a tömbön
-                formField.error = ""; //Kitöröljük az errormessage-et
-                if(formField.value === ""){//Ha nincs semmi írva a rublikába
-                    formField.error = "Kötelező megadni"//Jelenjen meg hibaüzenet
-                    isValid = false; //És legyen az isValid értéke hamis 
-                }
-                contentObject[formField.id] = formField.value; //A contentObject értékének az id-je legyen egynelő az input értékével
+        return form;
+    }
+
+
+    #validateFields(){
+        let Isvalid = true;
+        for(const formField of this.#arrayForFormField){
+            formField.error = '';
+            if(formField.value === ''){
+                formField.error = 'Kötelező megadni';
+                Isvalid = false;
             }
-            if(isValid){//Ha az érték továbbra is igaz
-                const pi_elem = new PiData(contentObject.name, contentObject.number, contentObject.century); //A Pi példányosítása
-            this.manager.addElement(pi_elem);//Metódus meghívása
-            }
-        })
+        }
+        return Isvalid
+    }
+
+    #getContentObject(){
+        const contentObject = {};
+        for(const formField of this.#arrayForFormField){
+            contentObject[formField.id] = formField.value;
+        }
+        return contentObject;
     }
 }
 
@@ -173,7 +212,7 @@ class UploadAndDownload extends Area{
                 for(const line of headlinesRemover){//Végigmegyünk a fájlon
                     const trimmer = line.trim(); //Leszedjük a felesleges részeket
                     const fields = trimmer.split(";") //A pontosvesszőnél elválasztjuk a részeket
-                    const pi = new PiData(fields[0], fields[1], fields[2])//Létrhozunk egy új elemet
+                    const pi = new PiData(fields[0], Number(fields[1]),Number( fields[2]))//Létrhozunk egy új elemet
                     this.manager.addElement(pi);//Hozzáadjuk az addElement segítségével
                 }
             }

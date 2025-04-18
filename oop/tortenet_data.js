@@ -34,7 +34,7 @@ class PiData{
      */
     constructor(name, number, century){//Constructor három bemeneti paraméterrel
         this.#name = name; //értékadás
-        this.#number = number;//értékadás
-        this.#century = century;//értékadás
+        this.#number = Number(number);//értékadás
+        this.#century = Number(century);//értékadás
     }
 }

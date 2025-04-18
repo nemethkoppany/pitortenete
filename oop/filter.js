@@ -40,8 +40,7 @@ class Filter extends Area{
         input.id = "filterInput"; //Adunk az inputnak egy id-t
         form.appendChild(input);//Hozzáadjuk a formhoz
 
-        const button = document.createElement("button");//Gomb létrehozása
-        button.innerText = "Szűrés"//Gomb szövegének megadása
+        const button = this.buttonCreator("Szűrés")
         form.appendChild(button);//Hozzáadjuk a gombot a formhoz
 
         form.addEventListener("submit", (e)=>{//eventListener a form submit eseményére
@@ -57,7 +56,7 @@ class Filter extends Area{
                     }
                 }
                 else if(select.value == "number"){//Ha a legördülő menü értéke number
-                    if(Number(inputFilter.value) === Number(elementValue.number)){//És ha az input értéke megegyezik a keresendő elemmel
+                    if(Number(inputFilter.value) ===Number(elementValue.number)){//És ha az input értéke megegyezik a keresendő elemmel
                         return true;//Térjen vissza igazzal
                     }
                 }
