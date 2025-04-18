@@ -17,4 +17,5 @@ const manager = new Manager(); //Manager példányosítása
 const table = new Table('table', manager); //Table osztály példányosítása
 const form = new Form('form', fieldElements, manager); //Form osztály példányosítása
 const upload = new UploadAndDownload("upload", manager)//UploadAndDownload osztály példányosítása
+const filterOOP = new Filter("filter", manager);
 

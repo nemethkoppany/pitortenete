@@ -289,12 +289,12 @@ formForFilter.addEventListener("submit", (e)=>{//eventlistener a formForFilter s
             }
         }
         else if(select.value == "number"){//Ha a kiválasztott opció  értéke number
-            if(filterInput.value === element.number){//És az input értéke megegyezik a numberrel
+            if(Number(filterInput.value) === Number(element.number)){//És az input értéke megegyezik a numberrel
                 return true;//Térjen vissza igazzal
             }
         }
         else if(select.value == "century"){//Ha a kiválasztott opció  értéke century
-            if(filterInput.value === element.century){//És az input értéke megegyezik a centuryval
+            if(Number(filterInput.value) ===Number( element.century)){//És az input értéke megegyezik a centuryval
                 return true;//Térjen vissza igazzal
             }
         }

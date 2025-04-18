@@ -46,23 +46,40 @@ class Table extends Area{
         super(nameOfTheClass, manager); //A superrel meghívjuk az Area construktorát
         const tbody = this.#tableCreation(); //Függvény meghívása
         this.manager.setaddPiCallback((pi)=>{ //callback-es függvény
-            const tr = document.createElement("tr") //HTML elem létzrehozása
-            tbody.appendChild(tr);//Hozzáadjuk az egyel fölötti réteghez
-        
-            const nametd = document.createElement("td");//HTML elem létzrehozása
-            nametd.textContent = pi.name; //Értékadás
-            tr.appendChild(nametd);//Hozzáadjuk az egyel fölötti réteghez
-        
-            const szamjegytd = document.createElement("td");//HTML elem létzrehozása
-            szamjegytd.textContent = pi.number; //Értékadás
-            tr.appendChild(szamjegytd);//Hozzáadjuk az egyel fölötti réteghez
-        
-            const szazadtd = document.createElement("td");//HTML elem létzrehozása
-            szazadtd.textContent = pi.century; //Értékadás
-            tr.appendChild(szazadtd);//Hozzáadjuk az egyel fölötti réteghez
+
+            this.#piRowCreator(pi, tbody);
+        })
+
+        this.manager.setTableRendererCallback((piArray)=>{//Meghívjuk a setTableRendererCallback metódust
+            tbody.innerHTML ="" //kitöröljük a tbody tartalmát
+            for(const pi of piArray){//Végigmegyünk a tömbön
+                this.#piRowCreator(pi, tbody); //meghívjuk a #piRowCreator privát metódust
+            }
         })
     }
 
+    #piRowCreator(pi, tbody){//Privát metódus
+        const tr = document.createElement("tr") //HTML elem létzrehozása
+        tbody.appendChild(tr);//Hozzáadjuk az egyel fölötti réteghez
+    
+        const nametd = document.createElement("td");//HTML elem létzrehozása
+        nametd.textContent = pi.name; //Értékadás
+        tr.appendChild(nametd);//Hozzáadjuk az egyel fölötti réteghez
+    
+        const szamjegytd = document.createElement("td");//HTML elem létzrehozása
+        szamjegytd.textContent = pi.number; //Értékadás
+        tr.appendChild(szamjegytd);//Hozzáadjuk az egyel fölötti réteghez
+    
+        const szazadtd = document.createElement("td");//HTML elem létzrehozása
+        szazadtd.textContent = pi.century; //Értékadás
+        tr.appendChild(szazadtd);//Hozzáadjuk az egyel fölötti réteghez
+    }
+
+
+    /**
+     * 
+     * @returns {HTMLElement}
+     */
     #tableCreation(){//Privát függvény
         const table = document.createElement('table'); //table létrehozás
         this.div.appendChild(table); //A table div-hez adása
