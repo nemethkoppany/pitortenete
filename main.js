@@ -11,6 +11,23 @@ const divMaker = (nameOfTheClass) =>{ //div készítős arrow function
     return div; //Visszatér a div-el
 }
 
+
+/**
+ * 
+ * @param {{PiData}[]} piArray 
+ * @param {{pi:PiData}:boolean} callback 
+ * @returns {{PiData}[]}
+ */
+const filter = (piArray, callback)=>{//Arrpw function két bemeneti paraméterrel
+    const result = []; //Készytünk egy tömböt
+    for(const pi of piArray){//Bejárjuk a tömböt
+        if(callback(pi)){// Ha a callback függvény visszatérési értéke igaz
+            result.push(pi); // A szűrt tömbhöz hozzáadjuk az aktuális elemet
+        }
+    }
+    return result; // Visszatérünk a szűrt tömbbel
+}
+
 const divAsAContainer = divMaker('container'); //container létrehozás
 document.body.appendChild(divAsAContainer); //A container body-hoz adása
 const divTable = divMaker('table');  //table létrehozás
@@ -181,3 +198,92 @@ downloadButton.addEventListener("click", ()=>{//Eventlistener a gomb lenyomásá
     link.click(); // A linkre kattintunk, hogy letöltsük a fájlt
     URL.revokeObjectURL(link.href);// A Blob objektum URL-jét visszavonjuk
 });
+
+const filterFormDiv = divMaker("filterform"); //Készítünk egy divet aminek adunk egy class-t
+divAsAContainer.appendChild(filterFormDiv); //Hozzáadjuk a containerhez
+
+const formForFilter = document.createElement("form")//form létrehozása
+filterFormDiv.appendChild(formForFilter);//Hozzáadjuk a div-hez
+
+const select = document.createElement("select")//Készítünk egy selectet
+formForFilter.appendChild(select);//Hozzáadjuk a formhoz a selectet
+
+const options = [{
+    value: "",//Első opció értéke
+    innerText: "Nincs szűrés"//Első opció innerTextje
+},
+{
+    value: "name",//Második opció értéke
+    innerText: "Név"//Második opció innerTextje
+},
+{
+    value:"number",//Harmadik opció értéke
+    innerText: "Számjegyek száma"//Harmadik opció innerTextje
+},
+{
+    value:"century",//Negyedik opció értéke
+    innerText:"Évszázad"//Negyedik opció innerTextje
+}
+];
+
+for(const option of options){//Végigmegyünk a tömbön
+    const optionElement = document.createElement("option")//Option elem létrehozása
+    optionElement.value = option.value; //Értékadás
+    optionElement.innerText = option.innerText //Szöveg megadása
+    select.appendChild(optionElement);
+}
+
+const input = document.createElement("input")//input készytése
+input.id ="filterInput";
+formForFilter.appendChild(input);//Hozzáadjuk a formhoz
+
+const button = document.createElement("button"); //Gomb létrehozása
+button.innerText ="Szűrés"//A gomb szövege
+formForFilter.appendChild(button); //Hozzáadjuk a formhoz
+
+formForFilter.addEventListener("submit", (e)=>{//eventlistener a formForFilter submit eseményére
+    e.preventDefault();//Megakadályozzuk az alapértelmezett végrehajtást
+
+    const filterInput = e.target.querySelector("#filterInput"); //Megkeressük a filterInput id-jű inputot
+    const select = e.target.querySelector("select");//Megkeressük a selectet
+
+    const ArrayThatIsFiltered = filter(tomb, (element)=>{//Változóban eltárolt arrow function
+        if(select.value == "name"){//Ha a kiválasztott opció  értéke name
+            if(filterInput.value === element.name){//És az input értéke megegyezik a névvel
+                return true;//Térjen vissza igazzal
+            }
+        }
+        else if(select.value == "number"){//Ha a kiválasztott opció  értéke number
+            if(filterInput.value === element.number){//És az input értéke megegyezik a numberrel
+                return true;//Térjen vissza igazzal
+            }
+        }
+        else if(select.value == "century"){//Ha a kiválasztott opció  értéke century
+            if(filterInput.value === element.century){//És az input értéke megegyezik a centuryval
+                return true;//Térjen vissza igazzal
+            }
+        }
+        else{//Minden más esetben
+            return true;//Térjen vissza igazzal
+        }
+    });
+
+    tbody.innerHTML ="" //Kitöröljük a tbody tartalmát
+    
+    for(const element of ArrayThatIsFiltered){//Végigmegyünk a tömbön
+        const tr = document.createElement("tr")//HTML elem készítése
+        tbody.appendChild(tr)//Hozzárakjuk az egyel fentebbi elemhez
+
+        const name = document.createElement("td");//Végigmegyünk a tömbön
+        name.innerHTML = element.name; //Az szövegének megadása
+        tr.appendChild(name);//Hozzárakjuk az egyel fentebbi elemhez
+
+        const number = document.createElement("td");//Végigmegyünk a tömbön
+        number.innerHTML = element.number; //Az szövegének megadása
+        tr.appendChild(number);//Hozzárakjuk az egyel fentebbi elemhez
+
+        const century = document.createElement("td");//Végigmegyünk a tömbön
+        century.innerHTML = element.century; //Az szövegének megadása
+        tr.appendChild(century);//Hozzárakjuk az egyel fentebbi elemhez
+    }
+})
