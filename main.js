@@ -118,3 +118,47 @@ formRegular.addEventListener("submit", (e)=>{//Eventlistener a submit eseményre
 
 divAsAContainer.appendChild(divTable); //A table container-hez adása
 divAsAContainer.appendChild(divForm); //A form container-hez adása
+
+const inputForFile = document.createElement("input")//input készítése
+divAsAContainer.appendChild(inputForFile); //Hozzáadom a container-hez
+inputForFile.id ="fileinput"//id megadása
+inputForFile.type = "file"; //Typus megadása
+
+inputForFile.addEventListener("change", (e)=>{//eventlistener a changere
+    const file = e.target.files[0];//Kiválasztjuk a fájlt
+    const reader = new FileReader(); //Beolvassuk azt
+
+    reader.onload = () =>{//Betöltésnél
+        const fileSperator = reader.result.split("\n")//Elválasztjuk a fájl külön részeit
+        const headlinesRemover = fileSperator.slice(1); //Leszedjük a fejlécet
+
+        for(const line of headlinesRemover){//Végigmegyünk a fájlon
+            const trimmer = line.trim(); //Leszedjük a felesleges részeket
+            const fields = trimmer.split(";") //A pontosvesszőnél elválasztjuk a részeket
+
+            const pi = {//megadjuk, hogy melyik rész micsoda
+                name: fields[0],//első rész
+                number: fields[1],//második rész
+                century: fields[2]//harmadik rész
+            };
+
+            tomb.push(pi); //Belerakjuk a tömbbe
+
+            const tr = document.createElement("tr"); //HTML elem létrehozása
+            tbody.appendChild(tr);//Az egyel fölötte lévő elembe rakása
+
+            const name = document.createElement("td");//HTML elem létrehozása
+            name.textContent = pi.name;//textContent megadása
+            tr.appendChild(name);//Az egyel fölötte lévő elembe rakása
+
+            const number = document.createElement("td");//HTML elem létrehozása
+            number.textContent = pi.number;//textContent megadása
+            tr.appendChild(number);//Az egyel fölötte lévő elembe rakása
+
+            const century = document.createElement("td");//HTML elem létrehozása
+            century.textContent = pi.century;//textContent megadása
+            tr.appendChild(century);//Az egyel fölötte lévő elembe rakása
+        }
+    }
+    reader.readAsText(file);//Megmondjuk neki, hogy szövegként olvassa be
+});
