@@ -112,13 +112,21 @@ class Form extends Area{
         form.appendChild(button); //Button formhoz adása
         form.addEventListener("submit", (e)=>{//Eseménykezelő a submitra
             e.preventDefault(); //Megakadályozzuk az alapétrelmezett lefutást
-            const inputFieldContents = e.target.querySelectorAll("input")//Megkeressük az inputokat
+           
             const contentObject = {}; //Objektum létrehozása
-            for(const inputField of inputFieldContents){//Végigmegyünk az inputokon
-                contentObject[inputField.id] = inputField.value;//A contentObject értékének az id-je legyen egynelő az input értékével
+            let isValid = true; //Alapértelmezetten igaz
+            for(const formField of this.#arrayForFormField){//Végigmegyünk a tömbön
+                formField.error = ""; //Kitöröljük az errormessage-et
+                if(formField.value === ""){//Ha nincs semmi írva a rublikába
+                    formField.error = "Kötelező megadni"//Jelenjen meg hibaüzenet
+                    isValid = false; //És legyen az isValid értéke hamis 
+                }
+                contentObject[formField.id] = formField.value; //A contentObject értékének az id-je legyen egynelő az input értékével
             }
-            const pi_elem = new PiData(contentObject.name, contentObject.number, contentObject.century); //A Pi példányosítása
+            if(isValid){//Ha az érték továbbra is igaz
+                const pi_elem = new PiData(contentObject.name, contentObject.number, contentObject.century); //A Pi példányosítása
             this.manager.addElement(pi_elem);//Metódus meghívása
+            }
         })
     }
 }
