@@ -1,3 +1,12 @@
+/**
+ * @typedef {{name:string, number:Number, century:Number}}  piData
+ */
+
+
+
+
+
+
 
 /**
  * 
@@ -13,13 +22,13 @@ const divMaker = (nameOfTheClass) =>{ //div készítős arrow function
 
 /**
  * 
- * @param {{PiData}[]} piArray 
- * @param {{pi:PiData}:boolean} callback 
- * @returns {{PiData}[]}
+ * @param {PiData[]} piArray 
+ * @param {function(PiData):boolean} callback 
+ * @returns {PiData[]}
  */
-const filter = (piArray, callback)=>{//Arrpw function két bemeneti paraméterrel
+const filter = (piArray, callback)=>{//Arrow function két bemeneti paraméterrel
     const result = []; //Készytünk egy tömböt
-    for(const pi of piArray){//Bejárjuk a tömböt
+    for(const pi of piArray){//Bejárjuk a piArray tömböt
         if(callback(pi)){// Ha a callback függvény visszatérési értéke igaz
             result.push(pi); // A szűrt tömbhöz hozzáadjuk az aktuális elemet
         }
@@ -30,11 +39,11 @@ const filter = (piArray, callback)=>{//Arrpw function két bemeneti paraméterre
 /**
  * 
  * @param {HTMLDivElement} container 
- * @param {function(HTMLElement): void} callback 
+ * @param {function(HTMLTableSectionElement): void} callback 
  */
 const tableCreation = (container, callback) =>{//Arrow function
     const divThatsATable = divMaker("table"); //div létrehozása classNameel
-    container.appendChild(divThatsATable);
+    container.appendChild(divThatsATable);//Hozzáadjuk a containerhez a table divet
 
     const tableRegular = document.createElement("table")//Valódi table létrehozása
     divThatsATable.appendChild(tableRegular); //Hozzáadjuk a divhez a table-t
@@ -42,52 +51,52 @@ const tableCreation = (container, callback) =>{//Arrow function
     const thead = document.createElement("thead")//A thead készítése
     tableRegular.appendChild(thead); //Hozzáadjuk a table-höz
 
-    const tr = document.createElement("tr");//tr készytése
+    const tr = document.createElement("tr");//tr készítése
     thead.appendChild(tr); //Hozzáadjuk a thead-hez
 
     const headerContent = ["Név", "Számjegyek száma", "Század"];//Tömb amiben a fejléc tartalma van
     for(const content of headerContent){//Végigmegyünk a tömbön
-        const th = document.createElement("th");//th készytése
+        const th = document.createElement("th");//th készítése
         th.innerText = content //A szöveg az aktuális tartalom lesz
         tr.appendChild(th); //Hozzáadjuk a tr-hez
     }
-    const tbody = document.createElement("tbody");//Készytünk egy tbody-t
+    const tbody = document.createElement("tbody");//Készítünk egy tbody-t
     tableRegular.appendChild(tbody);//Amit hozzárakunk a table-höz
     callback(tbody);// Meghívjuk a callback függvényt, aminek átadjuk a tbody-t
 }
 
 /**
  * 
- * @param {HTMLElement} tbody 
+ * @param {HTMLTableSectionElement} tbody 
  * @param {HTMLDivElement} container 
  * @param {tomb[]} piArray 
  */
-const uploading = (tbody, container, piArray) =>{
+const uploading = (tbody, container, piArray) =>{//Feltöltős arrow function, 3 bemeneti paraméterrel
     const inputForFile = document.createElement("input")//input készítése
 container.appendChild(inputForFile); //Hozzáadom a container-hez
 inputForFile.id ="fileinput"//id megadása
-inputForFile.type = "file"; //Typus megadása
+inputForFile.type = "file"; //Típus megadása
 
-inputForFile.addEventListener("change", (e)=>{//eventlistener a changere
+inputForFile.addEventListener("change", (e)=>{//eventlistener az inputForFile change eseményére
     const file = e.target.files[0];//Kiválasztjuk a fájlt
     const reader = new FileReader(); //Beolvassuk azt
 
     reader.onload = () =>{//Betöltésnél
-        const fileSperator = reader.result.split("\n")//Elválasztjuk a fájl külön részeit
+        const fileSperator = reader.result.split("\n")// Sorokra bontjuk a fájl tartalmát
         const headlinesRemover = fileSperator.slice(1); //Leszedjük a fejlécet
 
-        for(const line of headlinesRemover){//Végigmegyünk a fájlon
+        for(const line of headlinesRemover){//Végigmegyünk mindeen soron
             const trimmer = line.trim(); //Leszedjük a felesleges részeket
             const fields = trimmer.split(";") //A pontosvesszőnél elválasztjuk a részeket
 
-            const pi = {//megadjuk, hogy melyik rész micsoda
-                name: fields[0],//első rész
-                number: fields[1],//második rész
-                century: fields[2]//harmadik rész
+            const pi = {//Objektumot készítünk az adatokból
+                name: fields[0],//Név
+                number: fields[1],//Számjegyek száma
+                century: fields[2]//Század
             };
 
             piArray.push(pi); //Belerakjuk a tömbbe
-            addTheRow(pi, tbody)//Meghíjuk az addTheRow metódust
+            addTheRow(pi, tbody)//Megjelenítjük a sort a táblázatban
         }
     }
     reader.readAsText(file);//Szövegként olvassa 
@@ -97,13 +106,13 @@ inputForFile.addEventListener("change", (e)=>{//eventlistener a changere
     
 /**
  * 
- * @param {HTMLElement} tbody 
+ * @param {HTMLTableSectionElement} tbody 
  * @param {HTMLDivElement} container 
  * @param {tomb[]} piArray 
  */
-const formCreation = (tbody, container, piArray) =>{//Arrow function
-    const formDiv = divMaker("form");//div kreálás
-    container.appendChild(formDiv);//Hozzáadjuk a ocntainerhez
+const formCreation = (tbody, container, piArray) =>{//Arrow function a form készítéséhez, 3 bemeneti paraméterrel
+    const formDiv = divMaker("form");//div kreálás aminek van egy form class-a
+    container.appendChild(formDiv);//Hozzáadjuk a containerhez
 
     const formRegular = document.createElement("form");//Form készítése
     formDiv.appendChild(formRegular);//Hozzáadjuk a div-hez
@@ -123,8 +132,8 @@ const formCreation = (tbody, container, piArray) =>{//Arrow function
         }
     ];
 
-        for(const element of elements){//Végigmegyünk az objektumokon
-            const fieldDiv = divMaker("field")//Egy div készytése aminek a className-je field
+        for(const element of elements){//Végigmegyünk az tömbön
+            const fieldDiv = divMaker("field")//Egy div készítése aminek a className-je field
             formRegular.appendChild(fieldDiv); //Hozzáadjuk ezt a táblázathoz
             
             const label = document.createElement("label")//label elem létrehozása
@@ -140,7 +149,7 @@ const formCreation = (tbody, container, piArray) =>{//Arrow function
 
             fieldDiv.appendChild(document.createElement("br"))//Hozzáadunk egy sortörést
 
-            const error = document.createElement("span"); //Span elem készytése
+            const error = document.createElement("span"); //Span elem készítése
             error.className = "error"; //Megadjuk a class-át is
             fieldDiv.appendChild(error); //Ezt is hozzáadjuk a div-hez
             }
@@ -158,32 +167,32 @@ const formCreation = (tbody, container, piArray) =>{//Arrow function
             const inputFields = e.target.querySelectorAll("input");//Megkeressük az összes inputot
 
             let isValid = true; //Az isValid alapértelmezett értéke igaz;
-            for(const inputField of inputFields){
+            for(const inputField of inputFields){//Végigmegyünk az inputokon
                 const error = inputField.parentElement.querySelector('.error');// Kiválasztjuk a hibaüzenet span elemet
                 if(!error){//Ha nincs ilyen class-ú elem
                     console.error("Nincs errorfield")//Kiírjuk, hogy nincs errorfield
-                    return; //És kilépünk
+                    return; //És kilépünk a ciklusból
                 }
                 error.textContent =""//Kitötljük a hibaüzenetet
                 if(inputField.value === ""){//Ha nincs értéke valamelyik bemeneti mezőnek
                     error.textContent = "Kötelező megadni"; //Adjon hibaüzenetet
                     isValid = false; //És legyen az isValid false
                 }
-                contentObject[inputField.id] = inputField.value; //A contentObject értékének az id-je legyen egynelő az inputField értékével
+                contentObject[inputField.id] = inputField.value; // Az input mező értékét eltároljuk az objektumban az input id-ja alapján
             }
             if(isValid){//Ha az isValid értéke igaz
                 piArray.push(contentObject);//Felpusholjuk a tömbbe az obejektumot
-                addTheRow(contentObject, tbody);//Meghívjük az addTheRow függvényt
+                addTheRow(contentObject, tbody);// Új sor beszúrása a táblázatba
             }
         })    
 }
    
 /**
  * 
- * @param {pi} object 
- * @param {HTMLElement} tbody 
+ * @param {piData} object 
+ * @param {HTMLTableSectionElement} tbody 
  */
-const addTheRow = (object, tbody) =>{//Arrow function
+const addTheRow = (object, tbody) =>{// Egy új sor (tr) hozzáadása a táblázat törzséhez (tbody) az adott objektum adataival
     const tr = document.createElement("tr"); //HTML elem létrehozása
     tbody.appendChild(tr); //Hozzáadjuk a tbody-hoz
 
@@ -206,9 +215,9 @@ const addTheRow = (object, tbody) =>{//Arrow function
 /**
  * 
  * @param {HTMLDivElement} container 
- * @param {{name: string, number: number, century:number}[]} piArray 
+ * @param {piData[]} piArray 
  */
-const download = (container, piArray) =>{//Arrow function
+const download = (container, piArray) =>{ // Letöltés funkció
     const downloadButton = document.createElement("button"); //gomb létrehozása
 downloadButton.textContent = "Letöltés";
 container.appendChild(downloadButton); //A containerhez adás
@@ -218,9 +227,9 @@ downloadButton.addEventListener("click", ()=>{//Eventlistener a gomb lenyomásá
     const arrayContents = ["name,number,century"]; //Egy tömb amiben benne vamnak a különböző rublikák
 
     for(const pi of piArray){//Végigmegyünk a tömbön
-        arrayContents.push(`${pi.name};${pi.number};${pi.century}`); //Feltöltjuk egy sorként a tömbbe az adatokat
+        arrayContents.push(`${pi.name};${pi.number};${pi.century}`); //Minden sort hozzáadunk a fájlhoz
     }
-    const innerText = arrayContents.join("\n");// A tömböt egy stringgé alakítjuk
+    const innerText = arrayContents.join("\n"); // A tömböt soronként összefűzzük egy szöveggé
     const blob = new Blob([innerText]);// Létrehozunk egy Blob objektumot, amiben a szöveg van
     link.href = URL.createObjectURL(blob);// A link href attribútuma a Blob objektum URL-je
     link.download = "ujabb_pi.csv";// A link letöltési neve 
@@ -232,10 +241,10 @@ downloadButton.addEventListener("click", ()=>{//Eventlistener a gomb lenyomásá
 /**
  * 
  * @param {HTMLDivElement} container 
- * @param {HTMLElement} tbody 
- * @param {tomb[]} piArray 
+ * @param {HTMLTableSectionElement} tbody 
+ * @param {piData[]} piArray 
  */
-const filteredForm = (container, tbody, piArray) =>{
+const filteredForm = (container, tbody, piArray) =>{//Arrow function a form szűrésére
     const filterFormDiv = divMaker("filterform"); //Készítünk egy divet aminek adunk egy class-t
 container.appendChild(filterFormDiv); //Hozzáadjuk a containerhez
 
@@ -263,15 +272,15 @@ const options = [{
 }
 ];
 
-for(const option of options){//Végigmegyünk a tömbön
+for(const option of options){//Végigmegyünk az opciókon
     const optionElement = document.createElement("option")//Option elem létrehozása
-    optionElement.value = option.value; //Értékadás
-    optionElement.innerText = option.innerText //Szöveg megadása
-    select.appendChild(optionElement);
+    optionElement.value = option.value;  // Beállítjuk az option értékét
+    optionElement.innerText = option.innerText// Beállítjuk az option szövegét
+    select.appendChild(optionElement);// Hozzáadjuk az optiont a selecthez
 }
 
-const input = document.createElement("input")//input készytése
-input.id ="filterInput";
+const input = document.createElement("input"); // Létrehozunk egy input mezőt
+input.id ="filterInput";// Beállítjuk az input id-ját
 formForFilter.appendChild(input);//Hozzáadjuk a formhoz
 
 const button = document.createElement("button"); //Gomb létrehozása
@@ -285,22 +294,22 @@ formForFilter.addEventListener("submit", (e)=>{//eventlistener a formForFilter s
     const select = e.target.querySelector("select");//Megkeressük a selectet
 
     const ArrayThatIsFiltered = filter(piArray, (element)=>{//Változóban eltárolt arrow function
-        if(select.value == "name"){//Ha a kiválasztott opció  értéke name
+        if(select.value == "name"){// Ha név szerint szűrünk
             if(filterInput.value === element.name){//És az input értéke megegyezik a névvel
                 return true;//Térjen vissza igazzal
             }
         }
-        else if(select.value == "number"){//Ha a kiválasztott opció  értéke number
+        else if(select.value == "number"){ // Ha számjegyek száma szerint szűrünk
             if(filterInput.value === element.number){//És az input értéke megegyezik a numberrel
                 return true;//Térjen vissza igazzal
             }
         }
-        else if(select.value == "century"){//Ha a kiválasztott opció  értéke century
+        else if(select.value == "century"){ // Ha évszázad szerint szűrünk
             if(filterInput.value === element.century){//És az input értéke megegyezik a centuryval
                 return true;//Térjen vissza igazzal
             }
         }
-        else{//Minden más esetben
+        else{ // Ha nincs kiválasztva szűrési szempont
             return true;//Térjen vissza igazzal
         }
     });
@@ -308,7 +317,7 @@ formForFilter.addEventListener("submit", (e)=>{//eventlistener a formForFilter s
     tbody.innerHTML ="" //Kitöröljük a tbody tartalmát
     
     for(const element of ArrayThatIsFiltered){//Végigmegyünk a tömbön
-        addTheRow(element, tbody);
+        addTheRow(element, tbody);// Hozzáadjuk a szűrt elemeket a táblázathoz
     }
 })
 }

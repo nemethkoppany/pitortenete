@@ -1,32 +1,43 @@
+/**
+ * @callback addPiCallback
+ * @param {PiData} PiData
+ * @returns {void}
+ * 
+ * @callback tableRendererCallback
+ * @param {PiData[]} PiTomb
+ * @returns {void}
+ */
+
+
+
 class Manager{
     /**
-     * @type {Array}
+     * @type {PiData[]}
      */
-    #tomb //Privát változó
+    #tomb // Privát tömb, amely a PiData objektumokat tárolja
 
     /**
      * @type {addPiCallback}
      */
-    #addPiCallback //Privát változó
+    #addPiCallback// Privát változó, az új elem hozzáadásakor meghívandó callback
 
 
     /**
-     * @type {{name: string, number: number, century: number}[]}
+     * @type {tableRendererCallback}
      */
-    #tableRendererCallback //Privát változó
+    #tableRendererCallback //Privát változó, a táblázat újra rendereléséért felelős callback
 
     /**
-     * @property {{name: string, number: number, century: number}[]} tomb
+     * @property {PiData[]} tomb
      */
     constructor(){//paraméter nélküli constructor
-        this.#tomb = [] //deklaráljuk a tömböt
+        this.#tomb = [] //Inicializáljuk a privát tömböt üres tömbbel
     }
 
     /**
      * 
      * @param {function (PiData):void} {
-        
-     }} callback 
+         
      */
     setaddPiCallback(callback){//Függvény a callbackhez
         this.#addPiCallback = callback; //Az addPiCallback értéke a callback
@@ -34,9 +45,9 @@ class Manager{
 
     /**
      * 
-     * @param {function} callback 
+     * @param {function(PiData[]):void} callback 
      */
-    setTableRendererCallback(callback){//Egy setter létrehozása a privát változóhoz
+    setTableRendererCallback(callback){//Setter függvény a tableRendererCallback-hez
         this.#tableRendererCallback = callback;//A privát változó értéke a bemeneti paraméter
     }
     
@@ -44,13 +55,17 @@ class Manager{
      * 
      * @param {PiData} pi
      */
-    addElement(pi){//Egy metódus létrehozása
+    addElement(pi){//Egy metódus létrehozása az elemek hozzáadására
         this.#tomb.push(pi);//A privát tombhöz hozzáadunk egy új elemet
-        this.#addPiCallback(pi);//A privát változó értékét meghívjuk
+        this.#addPiCallback(pi);//Meghívjuk az addPiCallback-et az új elemmel
     }
 
+    /**
+     * 
+     * @param {function (PiData):boolean} callback 
+     */
     filter(callback){//Filter metódus egy bemeneti paraméterrel
-        const result = [];//Készytünk egy tömböt
+        const result = [];//Készítünk egy tömböt
         for(const pi of this.#tomb){//Végimegyünk a privát tömbön
             if(callback(pi)){//Ha a callback függvény igazat ad vissza
             result.push(pi)//A tömbhöz hozzáadjuk az új elemet
@@ -61,13 +76,13 @@ class Manager{
 
     /**
      * 
-     * @returns {string}
+     * @returns {string[]}
      */
-    downloadableString(){
+    downloadableString(){// A tárolt adatok letöltéséhez szükséges stringet ad vissza
         const result = ["name, number, century"];//Egy tömb amiben benne vamnak a különböző rublikák
-        for(const pi of this.#tomb){// Végigmegyünk a forradalom tömbön
+        for(const pi of this.#tomb){// Végigmegyünk a privát tömbön
             result.push(`${pi.name};${Number(pi.number)};${Number(pi.century)}`);// A tömbhöz hozzáadjuk az új sorokat
         }
-        return result.join("\n"); // A tömböt egy stringgé alakítjuk
+        return result.join("\n"); //A tömböt soronként összefűzzük egy szöveggé
     }
 }

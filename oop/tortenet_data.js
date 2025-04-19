@@ -2,28 +2,37 @@ class PiData{
     /**
      * @type {string}
      */
-    #name //privát változó
+    #name // Privát változó a név tárolására
 
     /**
      * @type {number}
      */
-    #number//privát változó
+    #number// Privát változó a számjegyek számának tárolására
 
     /**
      * @type {number}
      */
-    #century //privát változó
+    #century // Privát változó az évszázad tárolására
 
-    get name(){//Getter definiálása
-        return this.#name;//Visszatérünk a privát változóval
+    /**
+     * @return {string}
+     */
+    get name(){// Getter a név lekéréséhez
+        return this.#name;// Visszaadja a privát #name változó értékét
     }
 
-    get number(){//Getter definiálása
-        return this.#number//Visszatérünk a privát változóval
+    /**
+     * @returns {Number}
+     */
+    get number(){// Getter a számjegyek száma lekéréséhez
+        return this.#number// Visszaadja a privát #number változó értékét
     }
 
-    get century(){//Getter definiálása
-        return this.#century;//Visszatérünk a privát változóval
+    /**
+     * @returns {string}
+     */
+    get century(){// Getter az évszázad lekéréséhez
+        return this.#century;// Visszaadja a privát #century változó értékét
     }
 
     /**

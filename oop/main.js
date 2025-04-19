@@ -14,8 +14,8 @@ const fieldElements = [{ //form elemek
 }];
 
 const manager = new Manager(); //Manager példányosítása
-const table = new Table('table', manager); //Table osztály példányosítása
-const form = new Form('form', fieldElements, manager); //Form osztály példányosítása
-const upload = new UploadAndDownload("upload", manager)//UploadAndDownload osztály példányosítása
-const filterOOP = new Filter("filter", manager);
+const table = new Table('table', manager);// Példányosítjuk a Table osztályt, átadva a class nevét és a managert
+const form = new Form('form', fieldElements, manager); //Példányosítjuk a Form osztályt, átadva a class nevét, a mezőket és a managert
+const upload = new UploadAndDownload("upload", manager)//Példányosítjuk az UploadAndDownload osztályt, átadva a class nevét és a managert
+const filterOOP = new Filter("filter", manager); // Példányosítjuk a Filter osztályt, átadva a class nevét és a managert
 

@@ -3,28 +3,36 @@ class Area{
     /**
      * @type {HTMLDivElement}
      */
-    #div //privát változó
+    #div // Privát változó a div tárolására
 
     /**
      * @type {Manager}
      */
-    #manager //Privát változó
+    #manager //Privát változó a manager tárolására
 
+
+    /**
+     * @returns {HTMLDivElement}
+     */
     get div(){ //getter, amivel elérjük a div-et
         return this.#div; //visszaadja a div-et
     }
 
-    get manager(){//manager getter
+    /**
+     * @returns {Manager}
+     */
+    get manager(){//Getter a manager eléréséhez
         return this.#manager; //Visszatér a managerrel
     }
 
     /**
      * 
      * @param {string} nameOfTheClass 
+     * @param {Manager} manager
      */
     constructor(nameOfTheClass, manager){ //constructor, amiben van a className és a manager
         this.#manager = manager//értéket adunk a managernek
-        const container = this.#getContainerDiv(); //Meghívjuk a függvényt
+        const container = this.#getContainerDiv(); //Meghívjuk a privát metódust, ami visszaadja a container div-et
         this.#div = document.createElement("div");//Készítünk egy divet
         this.#div.className = nameOfTheClass;//Megadjuk a class-t
         container.appendChild(this.#div)//Hozzárakjuk a div-et a containerhez
@@ -34,8 +42,8 @@ class Area{
      * 
      * @returns {HTMLDivElement};
      */
-    #getContainerDiv(){ //Új privát függvény
-        let divContainer = document.querySelector('.containeroop'); //container kiválasztása
+    #getContainerDiv(){ //Privát metódus amivel vagy lekérjuk vagy létrehozzuk a container divet
+        let divContainer = document.querySelector('.containeroop'); //van-e már containeroop class-ú div
         if(!divContainer){ //ha nincs container, akkor létrehoz egyet
             divContainer = document.createElement('div'); //container létrehozás
             divContainer.className = 'containeroop'; //className beállítása
@@ -47,60 +55,87 @@ class Area{
     /**
      * 
      * @param {string} textContent 
-     * @returns {HTMLElement}
+     * @returns {HTMLButtonElement}
      */
     buttonCreator(textContent){ //Egy metódus a gomb készítéséhez
-        const button = document.createElement("button"); //Button készytése
+        const button = document.createElement("button"); //Button készítése
         button.textContent = textContent;//Megadjuk a gomb szövegét
         return button; //Vissztérünk a gombbal
     }
 }
 
 class Table extends Area{
+
+    /**
+     * 
+     * @param {string} nameOfTheClass 
+     * @param {Manager} manager 
+     */
     constructor(nameOfTheClass, manager){ //A Table construktora
         super(nameOfTheClass, manager); //A superrel meghívjuk az Area construktorát
-        const tbody = this.#tableCreation(); //Függvény meghívása
+        const tbody = this.#tableCreation(); //Létrehozzuk a táblázatot
        
-        this.manager.setaddPiCallback(this.#addPiCallback(tbody));
-        this.manager.setTableRendererCallback(this.#tableCallbackRenderer(tbody));
-    }
-
-    #tableCallbackRenderer(tbody){
-        return (tomb) => {
-            tbody.innerHTML = "";
-            for(const pi of tomb){
-                this.#piRowCreator(pi, tbody);
-            }
-        }
-    }
-
-    #addPiCallback(tbody){
-        return(pi) => {
-            this.#piRowCreator(pi, tbody);
-        }
-    }
-
-    #piRowCreator(pi, tbody){//Privát metódus
-        const tr = document.createElement("tr") //HTML elem létzrehozása
-        tbody.appendChild(tr);//Hozzáadjuk az egyel fölötti réteghez
-    
-        this.#createTD(tbody, pi.name);
-        this.#createTD(tbody, Number(pi.number));
-        this.#createTD(tbody, Number(pi.century));
-    }
-
-
-    #createTD(row, textContent, type = "td"){
-        const td = document.createElement(type);
-        td.textContent = textContent;
-        row.appendChild(td);
+        this.manager.setaddPiCallback(this.#addPiCallback(tbody));//Beállítjuk az új elem hozzáadásakor meghívandó callback-et
+        this.manager.setTableRendererCallback(this.#tableCallbackRenderer(tbody));//Beállítjuk a táblázat újrarendereléséért felelős callback-et
     }
 
     /**
      * 
-     * @returns {HTMLElement}
+     * @param {HTMLTableSectionElement} tbody 
+     * @returns {function(PiData[]):void}
      */
-    #tableCreation(){//Privát függvény
+    #tableCallbackRenderer(tbody){//Privát metódus, ami visszaad egy függvényt
+        return (tomb) => { //A függvény bemenete a PiData tömb
+            tbody.innerHTML = "";//Kiürítjük a tbodyt
+            for(const pi of tomb){// Végigmegyünk a tömbön
+                this.#piRowCreator(pi, tbody);//Hozzáadjuk a sort a táblázathoz
+            }
+        }
+    }
+
+    /**
+     * 
+     * @param {HTMLTableSectionElement} tbody 
+     * @returns {function (PiData):void}
+     */
+    #addPiCallback(tbody){//Privát metódus, ami visszaad egy függvényt
+        return(pi) => { // A függvény bemenete egy PiData objektum
+            this.#piRowCreator(pi, tbody);//Hozzáadjuk a sort a táblázathoz
+        }
+    }
+
+    /**
+     * 
+     * @param {PiData} pi 
+     * @param {HTMLTableSectionElement} tbody 
+     */
+    #piRowCreator(pi, tbody){// Privát metódus egy sor létrehozására
+        const tr = document.createElement("tr") //HTML elem létzrehozása
+        tbody.appendChild(tr);//Hozzáadjuk a tbody-hoz
+    
+        this.#createTD(tbody, pi.name); // Név cella hozzáadása
+        this.#createTD(tbody, Number(pi.number));//Számjegyek száma cella hozzáadása
+        this.#createTD(tbody, Number(pi.century));//Század cella hozzáadása
+    }
+
+
+    /**
+     * 
+     * @param {HTMLTableRowElement} row 
+     * @param {string} textContent 
+     * @param {string} type 
+     */
+    #createTD(row, textContent, type = "td"){//Privát metódus cella létrehozására
+        const td = document.createElement(type);//Létrehozunk egy td elemet
+        td.textContent = textContent;//Beállítjuk a cella tartalmát
+        row.appendChild(td); // Hozzáadjuk a sorhoz
+    }
+
+    /**
+     * 
+     * @returns {HTMLTableSectionElement}
+     */
+    #tableCreation(){//Privát metódus a táblázat létrehozására
         const table = document.createElement('table'); //table létrehozás
         this.div.appendChild(table); //A table div-hez adása
 
@@ -112,7 +147,7 @@ class Table extends Area{
 
         const headerContent = ["Név", "Számjegyek száma", "Század"]; //A header tartalma
         for(const content of headerContent){ //A headerContent tömb bejárása
-           this.#createTD(tr, content, "th");
+           this.#createTD(tr, content, "th");//Hozzáadjuk a fejléc cellákat
         }
         const tbody = document.createElement('tbody'); //A tbody létrehozás
         table.appendChild(tbody); //A tbody table-höz adása
@@ -123,67 +158,89 @@ class Table extends Area{
 class Form extends Area{
 
     /**
-     * @type {{fieldid: string, fieldLabel:string}[]}
+     * @type {FormField[]}}
      */
     #arrayForFormField //Privát változó
 
+
+    /**
+     * 
+     * @param {string} nameOfTheClass 
+     * @param {{fieldid:string, fieldLabel:string}[]} elementsOfField 
+     * @param {Manager} manager 
+     */
     constructor(nameOfTheClass,elementsOfField,manager){ //construcor készítése aminek egy paramétere van
         super(nameOfTheClass, manager); //A superrel meghívjuk az Area construktorát
 
         this.#arrayForFormField = []; //Készítünk egy tömböt
 
-        const form = this.#formCreation(elementsOfField);
-        form.addEventListener("submit", this.#submitEventListener());
+        const form = this.#formCreation(elementsOfField);//Létrehozunk egy formot
+        form.addEventListener("submit", this.#submitEventListener());//Hozzáadjuk a submit eseménykezelőt
     }
 
-    #submitEventListener(){
+    /**
+     * 
+     * @returns {EventListener}
+     */
+    #submitEventListener(){//Privát metódus ami visszaad egy eseménykezelőt
         return (e) =>{
-        e.preventDefault();
-        if(this.#validateFields()){
-            const contentObject = this.#getContentObject();
-            const pi = new PiData(contentObject.name, Number(contentObject.number), Number(contentObject.century));
-            this.manager.addElement(pi);
+        e.preventDefault();//Megakadályozzuk az alapértelmezett űrlapküldést
+        if(this.#validateFields()){//Ha minden mező ki lett töltve
+            const contentObject = this.#getContentObject();// Lekérjük a mezők értékeit
+            const pi = new PiData(contentObject.name, Number(contentObject.number), Number(contentObject.century)); // Létrehozunk egy új PiData objektumot
+            this.manager.addElement(pi);//Meghívjük az addElement függvényt
         }
-
-
     }
     }
 
-    #formCreation(fieldList){
+    /**
+     * 
+     * @param {{fieldid:string, fieldLabel:string}[]} fieldList 
+     * @returns {HTMLFormElement}
+     */
+    #formCreation(fieldList){ //Privát metódus a form létrehozására
 
         const form = document.createElement('form'); //A form létrehozás
         this.div.appendChild(form); //A form div-hez adása
        
 
         for(const element of fieldList){ //Végigmegyünk a field elemein
-           const formField = new FormField(element.fieldid, element.fieldLabel); //Példányosítjuk a FormField-et
+           const formField = new FormField(element.fieldid, element.fieldLabel); //létrehozunk egy FormField-et
            this.#arrayForFormField.push(formField); //Feltöltjük a tömbbe
            form.appendChild(formField.getDiv()); //Belerakjuk a formba a formfield-re meghívott getDiv metódust
         }
-        const button = this.buttonCreator("Hozzáadás")
+        const button = this.buttonCreator("Hozzáadás")//Létrehozunk egy hozzáadás gombot
         form.appendChild(button); //Button formhoz adása
-        return form;
+        return form;//Visszaadjuk a formot
     }
 
 
-    #validateFields(){
-        let Isvalid = true;
-        for(const formField of this.#arrayForFormField){
-            formField.error = '';
-            if(formField.value === ''){
-                formField.error = 'Kötelező megadni';
-                Isvalid = false;
+    /**
+     * 
+     * @returns {Boolean}
+     */
+    #validateFields(){// Privát metódus a mezők validálására
+        let Isvalid = true;//Létrehozunk egy változót ami alapból igaz
+        for(const formField of this.#arrayForFormField){//Végigmegyünk a mezőkön
+            formField.error = '';//Töröljük a hibaüzenetet
+            if(formField.value === ''){//Ha üres a mező
+                formField.error = 'Kötelező megadni';//Adjon hibaüzenetet
+                Isvalid = false;//Ás legyen az isValid értéke hamis
             }
         }
-        return Isvalid
+        return Isvalid;//Visszaadjuk az eredményt
     }
 
-    #getContentObject(){
-        const contentObject = {};
-        for(const formField of this.#arrayForFormField){
-            contentObject[formField.id] = formField.value;
+    /**
+     * 
+     * @returns {object}
+     */
+    #getContentObject(){//Privát metódus, ami visszaadja a mezők értékeit objektumban
+        const contentObject = {};//Üres objektum
+        for(const formField of this.#arrayForFormField){//Végigmegyünk a mezőkön
+            contentObject[formField.id] = formField.value;// Az input mező értékét eltároljuk az objektumban az input id-ja alapján
         }
-        return contentObject;
+        return contentObject;//Visszaadjuk az objektumot
     }
 }
 
@@ -201,15 +258,15 @@ class UploadAndDownload extends Area{
         input.type = "file"; //Típus megadása
         this.div.appendChild(input)//Belerakjuk a divbe
 
-        input.addEventListener("change", (e)=>{
-            const file = e.target.files[0];//Kiválasztjuk a fájlt
+        input.addEventListener("change", (e)=>{//Eseménykezelő a fájl kiválasztására
+            const file = e.target.files[0];//Lekérjük a kiválasztott fájlt
             const reader = new FileReader(); //Beolvassuk azt
         
             reader.onload = () =>{//Betöltésnél
-                const fileSperator = reader.result.split("\n")//Elválasztjuk a fájl külön részeit
+                const fileSperator = reader.result.split("\n")//Sorokra bontjuk a fájl tartalmát
                 const headlinesRemover = fileSperator.slice(1); //Leszedjük a fejlécet
         
-                for(const line of headlinesRemover){//Végigmegyünk a fájlon
+                for(const line of headlinesRemover){//Végigmegyünk a sorokon
                     const trimmer = line.trim(); //Leszedjük a felesleges részeket
                     const fields = trimmer.split(";") //A pontosvesszőnél elválasztjuk a részeket
                     const pi = new PiData(fields[0], Number(fields[1]),Number( fields[2]))//Létrhozunk egy új elemet
@@ -219,13 +276,13 @@ class UploadAndDownload extends Area{
             reader.readAsText(file);//Megmondjuk neki, hogy szövegként olvassa be
         })
 
-        const downloadButton = document.createElement("button");//gomb készytése
-        downloadButton.textContent ="Letöltés";//Gomb felirata
+        const downloadButton = document.createElement("button");//gomb készítése
+        downloadButton.textContent ="Letöltés";//Gomb szövege
         this.div.appendChild(downloadButton);//Hozzárakjuk a div-hez
 
         downloadButton.addEventListener("click", ()=>{//Eventlistener a gomb lenyomására
-            const link = document.createElement("a"); //Link képezése
-            const innerText = this.manager.downloadableString();// A tömböt egy stringgé alakítjuk
+            const link = document.createElement("a"); //Link létrehozása
+            const innerText = this.manager.downloadableString();//Lekérjük a letölthető adatokat
             const blob = new Blob([innerText]);// Létrehozunk egy Blob objektumot, amiben a szöveg van
             link.href = URL.createObjectURL(blob);// A link href attribútuma a Blob objektum URL-je
             link.download = "ujabb_pi.csv";// A link letöltési neve 
@@ -241,33 +298,42 @@ class FormField{
     /**
      * @type {string}
      */
-    #id //privát változó
+    #id // Privát változó az id tárolására
 
     /**
-     * @type {HTMLElement}
+     * @type {HTMLInputElement}
      */
-    #inputElement//privát változó
+    #inputElement//Privát változó az input elem tárolására
 
      /**
-     * @type {HTMLElement}
+     * @type {HTMLLabelElement}
      */
-    #labelElement//privát változó
+    #labelElement//Privát változó a label elem tárolására
 
      /**
-     * @type {HTMLElement}
+     * @type {HTMLSpanElement}
      */
-    #errorElement//privát változó
+    #errorElement//Privát változó a hibaüzenet elem tárolására
 
-    get id(){ //getter definiálása
+    /**
+     * @returns {string}
+     */
+    get id(){ //Getter az id eléréséhez
         return this.#id;//Visszatérünk a privát változóval
     }
 
-    get value(){//getter definiálása
+    /**
+     * @returns {string}
+     */
+    get value(){//Getter az input értékének eléréséhez
         return this.#inputElement.value; //Térjünk vissza a privát változó értékével
     }
 
-    set error(value){//setter definiálása
-        this.#errorElement.textContent = value; //Az elem-be legyen a value írva
+    /**
+     * @param {string} value
+     */
+    set error(value){//Setter a hibaüzenet beállításához
+        this.#errorElement.textContent = value; //Hibaüzenet beállítása
     }
 
     /**
@@ -276,9 +342,9 @@ class FormField{
      * @param {string} labelText 
      */
     constructor(id, labelText){//constructor két bemeneti paraméterrel
-        this.#id = id //Értékadás
+        this.#id = id //Az id beállítása
         this.#labelElement = document.createElement("label")//Készítünk egy labelt
-        this.#labelElement.htmlFor = id; //id megadása
+        this.#labelElement.htmlFor = id; //Beállítjuk a label for attribútumát
         this.#labelElement.textContent = labelText; //A kiírt szöveg
 
         this.#inputElement = document.createElement("input");//Készítünk egy inputot
@@ -288,7 +354,11 @@ class FormField{
         this.#errorElement.className = "error"; //Class megadása
     }
 
-    getDiv(){//getDiv metódus
+    /**
+     * 
+     * @returns {HTMLDivElement}
+     */
+    getDiv(){//Metódus ami visszaadja a mezőhöz tartozó div-et
         const div = divMaker("field")//Div készítése és field class név megadása
         const breaker = document.createElement("br")//br készítése
         const breaker2 = document.createElement("br")//br készítése
